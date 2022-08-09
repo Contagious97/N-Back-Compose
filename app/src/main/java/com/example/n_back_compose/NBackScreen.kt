@@ -2,8 +2,8 @@ package com.example.n_back_compose
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +33,7 @@ fun NBackBoard(nBackViewModel: NBackViewModel){
     }*/
     val width =
 
-    LazyVerticalGrid(cells = GridCells.Fixed(3), modifier = Modifier.size(420.dp,420.dp)){
+    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.size(420.dp,420.dp)){
         items(9)  {
             index ->
                 ImageSquare(isOn = index == currentIndex,130)
