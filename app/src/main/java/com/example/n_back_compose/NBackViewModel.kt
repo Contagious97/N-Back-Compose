@@ -1,10 +1,17 @@
 package com.example.n_back_compose
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
-class NBackViewModel : ViewModel(){
+
+class NBackViewModel(dataStore: DataStore<Preferences>) : ViewModel(){
 
     private var _gameLogic : GameLogic = GameLogic.instance!!
 
@@ -12,6 +19,11 @@ class NBackViewModel : ViewModel(){
 
     var isGameOver : MutableState<Boolean> = mutableStateOf(_gameLogic.gameOver())
     var isGameStarted : MutableState<Boolean> = mutableStateOf(_gameLogic.isGameStarted)
+    var _valueOfN = dataStore.data.map { it[TIME_BETWEEN_EVENTS] }
+
+
+
+    //var valueOfN : MutableState<Int> = mutableStateOf(_valueOfN.first()!)
 
     fun startGame() {
         _gameLogic.reset()
@@ -27,6 +39,12 @@ class NBackViewModel : ViewModel(){
         isGameOver.value = _gameLogic.gameOver()
         if (isGameOver.value)
             isGameStarted.value = false
+    }
+
+
+    companion object{
+        val TIME_BETWEEN_EVENTS = stringPreferencesKey("sp1")
+
     }
 
 

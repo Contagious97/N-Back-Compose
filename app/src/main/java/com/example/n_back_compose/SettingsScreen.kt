@@ -65,7 +65,7 @@ fun SettingsScreen(datastore: DataStore<Preferences>, navController: NavControll
                     leadingIcon = { Icon(Icons.Filled.Home, "Home") }
                 ) }
                 prefsItem {SwitchPref(
-                    key = "sw4",
+                    key = "sw5",
                     title = "Simple switch",
                     summary = "But with a leading icon and summary",
                     leadingIcon = { Icon(Icons.Filled.Home, "Home") }
@@ -73,32 +73,30 @@ fun SettingsScreen(datastore: DataStore<Preferences>, navController: NavControll
 
                 prefsItem { SliderPref(
                     key = "sp1",
-                    title = "Slider example with custom range and value shown on side",
-                    valueRange = 50f..200f,
+                    title = "Time between delay",
+                    valueRange = 1000f..2000f,
                     showValue = true
                 )}
 
                 prefsItem { ListPref(
                     key = "l1",
-                    title = "ListPref example",
-                    summary = "Opens up a dialog of options",
+                    title = "N-Value",
+                    useSelectedAsSummary = true,
                     entries = mapOf(
-                        "0" to "Entry 1",
-                        "1" to "Entry 2",
-                        "2" to "Entry 3",
-                        "3" to "Entry 4",
-                        "4" to "Entry 5"
+                        "0" to "2",
+                        "1" to "3",
+                        "2" to "4",
+                        "3" to "5"
                     )
                 ) }
 
                 prefsItem { DropDownPref(
                     key = "dd1",
-                    title = "Dropdown with currently selected item as summary",
+                    title = "Visual or auditory",
                     useSelectedAsSummary = true,
                     entries = mapOf(
-                        "0" to "Entry 1",
-                        "1" to "Entry 2",
-                        "2" to "Entry 3"
+                        "0" to "Auditory",
+                        "1" to "Visual"
                     )
                 ) }
 

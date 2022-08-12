@@ -15,9 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -26,16 +27,20 @@ import androidx.navigation.compose.rememberNavController
 import com.example.n_back_compose.ui.theme.NBackComposeTheme
 import kotlinx.coroutines.delay
 
+
 class MainActivity : ComponentActivity() {
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var nBackViewModel : NBackViewModel = NBackViewModel()
         setContent {
 
             NBackComposeTheme {
+                var nBackViewModel : NBackViewModel = NBackViewModel(LocalContext.current.dataStore)
                 val navController = rememberNavController()
+
+                
+
                 NavHost(navController = navController, startDestination = "GameScreen"){
                     composable("GameScreen"){
                         GameScreen(nBackViewModel = nBackViewModel, navController)
@@ -57,18 +62,18 @@ fun Greeting(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    var nBackViewModel : NBackViewModel = NBackViewModel()
+    /*var nBackViewModel : NBackViewModel = NBackViewModel(LocalContext.current.dataStore)
     NBackComposeTheme {
         Column() {
             NBackBoard(nBackViewModel = nBackViewModel)
             Button(onClick = { nBackViewModel.startGame() }){}
         }
 
-    }
+    }*/
 }
 @Composable
 fun GameScreen(nBackViewModel: NBackViewModel, navController: NavController){
-    Column() {
+    Column(Modifier.fillMaxSize()) {
         TopAppBar(title = {Text(text = "Single-N-Back")}, backgroundColor = MaterialTheme.colors.primary, actions = {
             IconButton(onClick = { navController.navigate("SettingsScreen")}) {
                 Icon(imageVector = Icons.Default.Favorite, contentDescription = "Settings")
@@ -84,14 +89,14 @@ fun GameScreen(nBackViewModel: NBackViewModel, navController: NavController){
 @Composable
 fun ButtonsAndText(nBackViewModel: NBackViewModel){
 
-    Column(Modifier.fillMaxSize(),verticalArrangement = Arrangement.Center,horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(verticalArrangement = Arrangement.Center,horizontalAlignment = Alignment.CenterHorizontally) {
         val setting = 1
         if (setting == 1)
             VisualMatchButton()
         else AudioMatchButton()
 
-        Row(Modifier.padding(10.dp),horizontalArrangement = Arrangement.Center) {
-            Column(modifier = Modifier.padding(10.dp),verticalArrangement = Arrangement.Center) {
+        Row(horizontalArrangement = Arrangement.Center) {
+            Column(verticalArrangement = Arrangement.Center) {
                 Text("Score")
                 Button(onClick = { /*TODO*/ }) {
                     Text(text = "Restart")
@@ -115,13 +120,14 @@ fun ButtonsAndText(nBackViewModel: NBackViewModel){
 
 @Composable
 fun TextAboveBoard(nBackViewModel: NBackViewModel){
+
     Column(verticalArrangement = Arrangement.SpaceEvenly,horizontalAlignment = Alignment.CenterHorizontally) {
         Row(Modifier.fillMaxWidth()) {
             Text(text = "Number of events: ${nBackViewModel.currentPositionIndex.value} of 16")
             Text(text = "Selected: Visual")
         }
         Row(Modifier.fillMaxWidth()) {
-            Text(text = "Time between events: $")
+            Text(text = "Time between events: ${dataStore.data.map { preferences -> preferences[""]}}")
             Text(text = "Value of N: 2")
         }
     }
