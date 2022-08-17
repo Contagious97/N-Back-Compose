@@ -18,19 +18,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.n_back_compose.ui.theme.NBackComposeTheme
+import com.example.n_back_compose.viewmodels.NBackViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 
 class MainActivity : ComponentActivity() {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
+    var valueOfN = 2;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -39,7 +40,6 @@ class MainActivity : ComponentActivity() {
                 var nBackViewModel : NBackViewModel = NBackViewModel(LocalContext.current.dataStore)
                 val navController = rememberNavController()
 
-                
 
                 NavHost(navController = navController, startDestination = "GameScreen"){
                     composable("GameScreen"){
@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
                         SettingsScreen(datastore = LocalContext.current.dataStore, navController = navController)
                     }
                 }
+
             }
         }
     }
@@ -120,14 +121,17 @@ fun ButtonsAndText(nBackViewModel: NBackViewModel){
 
 @Composable
 fun TextAboveBoard(nBackViewModel: NBackViewModel){
-
+    var valueOfN = 2
+    LaunchedEffect(nBackViewModel._valueOfN){
+        valueOfN = nBackViewModel._valueOfN.first()?.toInt() ?: 2
+    }
     Column(verticalArrangement = Arrangement.SpaceEvenly,horizontalAlignment = Alignment.CenterHorizontally) {
         Row(Modifier.fillMaxWidth()) {
             Text(text = "Number of events: ${nBackViewModel.currentPositionIndex.value} of 16")
             Text(text = "Selected: Visual")
         }
         Row(Modifier.fillMaxWidth()) {
-            Text(text = "Time between events: ${dataStore.data.map { preferences -> preferences[""]}}")
+            Text(text = "Time between events: $valueOfN")
             Text(text = "Value of N: 2")
         }
     }

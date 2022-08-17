@@ -1,7 +1,6 @@
-package com.example.n_back_compose
+package com.example.n_back_compose.model
 
 import android.util.Log
-import com.example.n_back_compose.GameLogic
 import kotlin.random.Random
 
 class GameLogic private constructor(private var n_back: Int, private var rounds: Int) {

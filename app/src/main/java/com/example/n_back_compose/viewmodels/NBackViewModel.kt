@@ -1,13 +1,12 @@
-package com.example.n_back_compose
+package com.example.n_back_compose.viewmodels
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.first
+import com.example.n_back_compose.model.GameLogic
 import kotlinx.coroutines.flow.map
 
 
