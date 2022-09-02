@@ -58,7 +58,7 @@ fun SettingsScreen(datastore: DataStore<Preferences>, navController: NavControll
             )
         ){
             PrefsScreen(dataStore = datastore, content = {
-                prefsItem { SwitchPref(
+                /*prefsItem { SwitchPref(
                     key = "sw4",
                     title = "Simple switch",
                     summary = "But with a leading icon and summary",
@@ -69,13 +69,19 @@ fun SettingsScreen(datastore: DataStore<Preferences>, navController: NavControll
                     title = "Simple switch",
                     summary = "But with a leading icon and summary",
                     leadingIcon = { Icon(Icons.Filled.Home, "Home") }
-                )  }
+                )  }*/
 
-                prefsItem { SliderPref(
+                prefsItem { ListPref(
                     key = "sp1",
-                    title = "Time between delay",
-                    valueRange = 1000f..2000f,
-                    showValue = true
+                    title = "Time between events",
+                    useSelectedAsSummary = true,
+                    entries = mapOf(
+                        "1000" to "1000",
+                        "1500" to "1500",
+                        "2000" to "2000",
+                        "2500" to "2500"
+                    ),
+                    defaultValue = "1000"
                 )}
 
                 prefsItem { ListPref(
@@ -83,11 +89,12 @@ fun SettingsScreen(datastore: DataStore<Preferences>, navController: NavControll
                     title = "N-Value",
                     useSelectedAsSummary = true,
                     entries = mapOf(
-                        "0" to "2",
-                        "1" to "3",
-                        "2" to "4",
-                        "3" to "5"
-                    )
+                        "2" to "2",
+                        "3" to "3",
+                        "4" to "4",
+                        "5" to "5"
+                    ),
+                    defaultValue = "2"
                 ) }
 
                 prefsItem { DropDownPref(
@@ -95,9 +102,10 @@ fun SettingsScreen(datastore: DataStore<Preferences>, navController: NavControll
                     title = "Visual or auditory",
                     useSelectedAsSummary = true,
                     entries = mapOf(
-                        "0" to "Auditory",
-                        "1" to "Visual"
-                    )
+                        "Auditory" to "Auditory",
+                        "Visual" to "Visual"
+                    ),
+                    defaultValue = "Visual"
                 ) }
 
             })

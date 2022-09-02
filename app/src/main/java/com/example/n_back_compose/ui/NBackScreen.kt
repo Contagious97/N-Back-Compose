@@ -1,38 +1,32 @@
 package com.example.n_back_compose
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.n_back_compose.viewmodels.NBackViewModel
+import kotlinx.coroutines.delay
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NBackBoard(nBackViewModel: NBackViewModel){
     val currentIndex = nBackViewModel.currentPositionIndex.value;
-
-    /*Row() {
-        for (i in 0..2){
-            ImageSquare(isOn = i == currentIndex)
-        }
-        for (i in 3..5){
-            ImageSquare(isOn = i == currentIndex)
-
-        }
-        for (i in 6..8){
-            ImageSquare(isOn = i == currentIndex)
-        }
-
-    }*/
-    val width =
 
     LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.size(420.dp,420.dp)){
         items(9)  {
@@ -41,25 +35,6 @@ fun NBackBoard(nBackViewModel: NBackViewModel){
 
         }
     }
-    
-    /*Column(verticalArrangement = Arrangement.SpaceEvenly) {
-        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-            NBackSquare(currentIndex == 0)
-            NBackSquare(currentIndex == 1)
-            NBackSquare(currentIndex == 2)
-        }
-
-        Row(horizontalArrangement = Arrangement.SpaceAround) {
-            NBackSquare(currentIndex == 3)
-            NBackSquare(currentIndex == 4)
-            NBackSquare(currentIndex == 5)
-        }
-        Row(horizontalArrangement = Arrangement.SpaceAround) {
-            NBackSquare(currentIndex == 6)
-            NBackSquare(currentIndex == 7)
-            NBackSquare(currentIndex == 8)
-        }
-    }*/
 
 }
 
@@ -95,7 +70,7 @@ fun ImageSquare(isOn: Boolean, size: Int){
 fun FilledSquare(size: Int){
     Box(
         modifier = Modifier
-            .size(size.dp,size.dp)
+            .size(size.dp, size.dp)
             .background(Color(0xFF0000FF))
             .border(1.dp, Color.Gray)
             .clip(RectangleShape)
@@ -106,9 +81,95 @@ fun FilledSquare(size: Int){
 fun TransparentSquare(size: Int){
     Box(
         modifier = Modifier
-            .size(size.dp,size.dp)
+            .size(size.dp, size.dp)
             .background(Color.Transparent)
             .border(1.dp, Color.Gray)
             .clip(RectangleShape)
     )
+}
+
+@Composable
+fun GameScreen(nBackViewModel: NBackViewModel, navController: NavController){
+    Column(Modifier.fillMaxSize()) {
+        TopAppBar(title = { Text(text = "Single-N-Back") }, backgroundColor = MaterialTheme.colors.primary, actions = {
+            IconButton(onClick = { navController.navigate("SettingsScreen")}) {
+                Icon(imageVector = Icons.Default.Favorite, contentDescription = "Settings")
+            }
+        })
+        TextAboveBoard(nBackViewModel = nBackViewModel)
+        NBackBoard(nBackViewModel = nBackViewModel)
+
+        ButtonsAndText(nBackViewModel = nBackViewModel)
+    }
+}
+
+@Composable
+fun ButtonsAndText(nBackViewModel: NBackViewModel){
+
+    Column(verticalArrangement = Arrangement.Center,horizontalAlignment = Alignment.CenterHorizontally) {
+        val setting = 1
+        if (setting == 1)
+            VisualMatchButton()
+        else AudioMatchButton()
+
+        Row(horizontalArrangement = Arrangement.Center) {
+            Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Score")
+                Button(onClick = { /*TODO*/ }) {
+                    Text(text = "Restart")
+                }
+                Button(onClick = { nBackViewModel.startGame() }) {
+                    Text(text = "Start")
+                    LaunchedEffect(nBackViewModel.isGameStarted.value) {
+                        Log.i("Outside timer","tick++")
+                        while(!nBackViewModel.isGameOver.value && nBackViewModel.isGameStarted.value) {
+                            nBackViewModel.makeMove()
+                            delay(1500)
+                            Log.i("In timer","tick++")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun TextAboveBoard(nBackViewModel: NBackViewModel){
+    /*val valueOfN = nBackViewModel.valueOfN.value
+    val timeBetweenEvents = nBackViewModel.timeBetweenEvents.value
+    val selectedStimuli = nBackViewModel.selectedStimuli.value*/
+
+    val v = nBackViewModel._valueOfN.collectAsState(initial = "2")
+    val t = nBackViewModel._timeBetweenEvents.collectAsState(initial = "1000")
+    val s = nBackViewModel._selectedStimuli.collectAsState(initial = "Visual")
+    Column(verticalArrangement = Arrangement.SpaceEvenly,horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(Modifier.fillMaxWidth()) {
+            Text(text = "Number of events: ${nBackViewModel.currentPositionIndex.value} of 16")
+            Text(text = "Selected: ${s.value}")
+        }
+        Row(Modifier.fillMaxWidth()) {
+            Text(text = "Time between events: ${t.value.toString()}")
+            Text(text = "Value of N: ${v.value}")
+        }
+    }
+}
+
+@Composable
+fun VisualMatchButton(){
+    Row(Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Start) {
+        Button(onClick = { /*TODO*/ }) {
+            Text("Visual Match")
+        }
+    }
+}
+
+@Composable
+fun AudioMatchButton(){
+    Row(horizontalArrangement = Arrangement.End) {
+        Button(onClick = { /*TODO*/ }) {
+            Text("Audio Match")
+        }
+    }
 }
