@@ -1,5 +1,6 @@
 package com.example.n_back_compose
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.n_back_compose.viewmodels.NBackViewModel
@@ -90,17 +92,35 @@ fun TransparentSquare(size: Int){
 
 @Composable
 fun GameScreen(nBackViewModel: NBackViewModel, navController: NavController){
-    Column(Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text(text = "Single-N-Back") }, backgroundColor = MaterialTheme.colors.primary, actions = {
-            IconButton(onClick = { navController.navigate("SettingsScreen")}) {
-                Icon(imageVector = Icons.Default.Favorite, contentDescription = "Settings")
+    val configuration = LocalConfiguration.current;
+    when(configuration.layoutDirection){
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            Row(Modifier.fillMaxSize()) {
+                TopAppBar(title = { Text(text = "Single-N-Back") }, backgroundColor = MaterialTheme.colors.primary, actions = {
+                    IconButton(onClick = { navController.navigate("SettingsScreen")}) {
+                        Icon(imageVector = Icons.Default.Favorite, contentDescription = "Settings")
+                    }
+                })
+                NBackBoard(nBackViewModel = nBackViewModel)
+                TextAboveBoard(nBackViewModel = nBackViewModel)
+                ButtonsAndText(nBackViewModel = nBackViewModel)
             }
-        })
-        TextAboveBoard(nBackViewModel = nBackViewModel)
-        NBackBoard(nBackViewModel = nBackViewModel)
+        } else ->{
+        Column(Modifier.fillMaxSize()) {
+            TopAppBar(title = { Text(text = "Single-N-Back") }, backgroundColor = MaterialTheme.colors.primary, actions = {
+                IconButton(onClick = { navController.navigate("SettingsScreen")}) {
+                    Icon(imageVector = Icons.Default.Favorite, contentDescription = "Settings")
+                }
+            })
+            TextAboveBoard(nBackViewModel = nBackViewModel)
+            NBackBoard(nBackViewModel = nBackViewModel)
 
-        ButtonsAndText(nBackViewModel = nBackViewModel)
+            ButtonsAndText(nBackViewModel = nBackViewModel)
+        }
+        }
     }
+
+
 }
 
 @Composable
